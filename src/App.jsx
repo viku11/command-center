@@ -474,7 +474,7 @@ const App = () => {
           <span style={styles.kpiLabel}>Migration Complete</span>
         </div>
         <div style={styles.kpiCard}>
-          <span style={{...styles.kpiValue, color: '#f59e0b', fontSize: '1.2rem'}}>{data.posture.security}</span>
+          <span style={{...styles.kpiValue, color: '#f59e0b', fontSize: '1.5rem'}}>{data.posture.security}</span>
           <span style={styles.kpiLabel}>Security Posture</span>
         </div>
       </div>
@@ -496,7 +496,7 @@ const App = () => {
       {/* AST Dependency Topology — Per-Batch Stacked Bars */}
       <div style={styles.section}>
         <h2 style={styles.sectionTitle}>AST Dependency Topology — Batch Progress</h2>
-        <p style={{color: '#64748b', fontSize: '0.8rem', margin: '0 0 16px 0'}}>Click any batch to inspect individual files</p>
+        <p style={{color: '#64748b', fontSize: '0.95rem', margin: '0 0 16px 0'}}>Click any batch to inspect individual files</p>
 
         {data.batch_details ? (
           <div style={styles.topoContainer}>
@@ -566,10 +566,10 @@ const App = () => {
           <div style={styles.detailPanel}>
             <div style={styles.detailHeader}>
               <div>
-                <h3 style={{margin: 0, color: '#f8fafc', fontSize: '1rem'}}>
+                <h3 style={{margin: 0, color: '#f8fafc', fontSize: '1.2rem'}}>
                   Batch {selectedBatch.batch} — {selectedBatch.total} Files
                 </h3>
-                <span style={{color: '#64748b', fontSize: '0.8rem'}}>
+                <span style={{color: '#64748b', fontSize: '0.95rem'}}>
                   {selectedBatch.completed} migrated · {selectedBatch.pending} remaining
                 </span>
               </div>
@@ -592,12 +592,12 @@ const App = () => {
                           ? '3px solid #3b82f6'
                           : '3px solid #475569',
                     }}>
-                      <span style={{fontSize: '0.85rem', flexShrink: 0}}>
+                      <span style={{fontSize: '1rem', flexShrink: 0}}>
                         {done ? '✅' : inFlight ? '🔵' : '⬜'}
                       </span>
                       <span style={{
                         fontFamily: "'Fira Code', 'Cascadia Code', 'Consolas', monospace",
-                        fontSize: '0.82rem',
+                        fontSize: '0.95rem',
                         color: done ? '#059669' : inFlight ? '#3b82f6' : '#cbd5e1',
                         wordBreak: 'break-all',
                       }}>
@@ -616,11 +616,11 @@ const App = () => {
         <h2 style={styles.sectionTitle}>System Posture</h2>
         <div style={styles.postureRow}>
           <div style={styles.postureCard}>
-            <span style={{fontSize: '1.5rem'}}>🛡️</span>
+            <span style={{fontSize: '1.8rem'}}>🛡️</span>
             <span style={styles.postureLabel}>{data.posture.security}</span>
           </div>
           <div style={styles.postureCard}>
-            <span style={{fontSize: '1.5rem'}}>🔄</span>
+            <span style={{fontSize: '1.8rem'}}>🔄</span>
             <span style={styles.postureLabel}>{data.posture.resilience}</span>
           </div>
         </div>
@@ -644,13 +644,13 @@ const styles = {
     position: 'relative',
   },
   title: {
-    fontSize: '2rem',
+    fontSize: '2.6rem',
     fontWeight: '700',
     color: '#f8fafc',
     margin: '0 0 8px 0',
   },
   subtitle: {
-    fontSize: '1rem',
+    fontSize: '1.2rem',
     color: '#64748b',
     margin: 0,
   },
@@ -664,19 +664,19 @@ const styles = {
   kpiCard: {
     backgroundColor: '#1e293b',
     borderRadius: '12px',
-    padding: '24px 32px',
+    padding: '28px 36px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    minWidth: '180px',
+    minWidth: '200px',
   },
   kpiValue: {
-    fontSize: '2.5rem',
+    fontSize: '3.2rem',
     fontWeight: '800',
     color: '#059669',
   },
   kpiLabel: {
-    fontSize: '0.85rem',
+    fontSize: '1rem',
     color: '#94a3b8',
     marginTop: '8px',
     textTransform: 'uppercase',
@@ -689,17 +689,17 @@ const styles = {
     marginBottom: '24px',
   },
   sectionTitle: {
-    fontSize: '1.1rem',
+    fontSize: '1.35rem',
     fontWeight: '600',
     color: '#f8fafc',
     marginTop: 0,
-    marginBottom: '4px',
+    marginBottom: '6px',
   },
   progressBarOuter: {
     display: 'flex',
-    height: '28px',
+    height: '36px',
     backgroundColor: '#0f172a',
-    borderRadius: '14px',
+    borderRadius: '18px',
     overflow: 'hidden',
     marginTop: '12px',
   },
@@ -711,7 +711,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: '8px',
-    fontSize: '0.85rem',
+    fontSize: '1.05rem',
     color: '#94a3b8',
   },
   topoContainer: {
@@ -729,18 +729,18 @@ const styles = {
     gap: '4px',
   },
   topoFileCount: {
-    fontSize: '0.7rem',
+    fontSize: '0.9rem',
     fontWeight: '600',
   },
   topoBarContainer: {
-    width: '44px',
+    width: '52px',
     borderRadius: '4px',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
   },
   topoLabel: {
-    fontSize: '0.7rem',
+    fontSize: '0.9rem',
     marginTop: '4px',
   },
   detailPanel: {
@@ -794,13 +794,13 @@ const styles = {
   postureCard: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    gap: '14px',
     backgroundColor: '#0f172a',
     borderRadius: '8px',
-    padding: '16px 24px',
+    padding: '20px 28px',
   },
   postureLabel: {
-    fontSize: '0.95rem',
+    fontSize: '1.15rem',
     color: '#e2e8f0',
   },
   configBtn: {
