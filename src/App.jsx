@@ -12,7 +12,7 @@ const App = () => {
   useEffect(() => {
     const fetchTelemetry = async () => {
       try {
-        const response = await fetch('/telemetry.json');
+        const response = await fetch(`/telemetry.json?t=${Date.now()}`);
         if (response.ok) {
           const jsonData = await response.json();
           setData(jsonData);
@@ -96,7 +96,7 @@ const App = () => {
         <div style={{...styles.card, gridColumn: 'span 2'}}>
           <h3 style={styles.sectionTitle}><GitPullRequest size={18} color="#60a5fa" /> AST Dependency Topology (Batch {data.batch.current} of {data.batch.total})</h3>
           <div style={styles.topoContainer}>
-            {Array.from({ length: Math.max(8, data.batch.total) }).map((_, idx) => {
+            {Array.from({ length: data.batch.total }).map((_, idx) => {
               const batchNum = idx + 1;
               const isCurrent = batchNum === data.batch.current;
               const isPast = batchNum < data.batch.current;
