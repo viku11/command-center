@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Shield, GitPullRequest, Clock, Cpu, Activity } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const App = () => {
-  const [data, setData] = useState({
-    progress: { completed: 0, pending: 120, in_progress: 0 },
-    roi: { hours_saved: 0, active_agents: 0 },
-    batch: { current: 1, total: 1 },
-    posture: { security: "Zero-Trust (PR-Gated)", resilience: "Stateless Auto-Resume Active" }
-  });
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     const fetchTelemetry = async () => {
@@ -21,97 +15,134 @@ const App = () => {
         console.log("Waiting for Orchestrator to boot...");
       }
     };
-    const intervalId = setInterval(fetchTelemetry, 3000);
+
     fetchTelemetry();
-    return () => clearInterval(intervalId);
+    const interval = setInterval(fetchTelemetry, 3000);
+    return () => clearInterval(interval);
   }, []);
+
+  if (!data) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <h1 style={styles.title}>⏳ Awaiting Orchestrator Connection...</h1>
+          <p style={styles.subtitle}>Start the Migration Engine to initialize telemetry.</p>
+        </div>
+      </div>
+    );
+  }
 
   const totalFiles = data.progress.completed + data.progress.pending + data.progress.in_progress;
   const progressPct = totalFiles > 0 ? ((data.progress.completed / totalFiles) * 100).toFixed(1) : 0;
 
   return (
     <div style={styles.container}>
-      <style>{hoverAnimation}</style>
-      
-      <header style={styles.header}>
-        <h1 style={styles.title}>Migration Orchestrator Command Center</h1>
-        <p style={styles.subtitle}>Autonomous GitOps Pipeline & AI Fleet Manager</p>
-      </header>
+      <style>{pulseAnimation}</style>
 
-      {/* Top Row: Executive ROI */}
-      <div style={styles.grid}>
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>
-            <span style={styles.label}>Human Hours Saved</span>
-            <Clock size={20} color="#60a5fa" />
-          </div>
-          <div style={styles.statContainer}>
-            <span style={styles.statValue}>{data.roi.hours_saved}</span>
-            <span style={styles.statUnit}>hrs</span>
-          </div>
+      {/* Header */}
+      <div style={styles.header}>
+        <h1 style={styles.title}>🛡️ Enterprise Migration Command Center</h1>
+        <p style={styles.subtitle}>Autonomous TypeScript Migration • Stateless GitOps • Zero-Trust Security</p>
+      </div>
+
+      {/* KPI Row */}
+      <div style={styles.kpiRow}>
+        <div style={styles.kpiCard}>
+          <span style={styles.kpiValue}>{data.roi.hours_saved}</span>
+          <span style={styles.kpiLabel}>Human Hours Saved</span>
         </div>
-
-        <div style={{...styles.card, borderRight: data.roi.active_agents > 0 ? '4px solid #10b981' : '1px solid #374151'}}>
-          <div style={styles.cardHeader}>
-            <span style={styles.label}>Active AI Agents</span>
-            <Cpu size={20} color={data.roi.active_agents > 0 ? "#10b981" : "#4b5563"} />
-          </div>
-          <div style={styles.statValue}>{data.roi.active_agents}</div>
-          <div style={{...styles.badge, color: '#10b981'}}>
-            {data.roi.active_agents > 0 ? "▲ Horizontal Scale Active" : "Wait-State Armed"}
-          </div>
+        <div style={styles.kpiCard}>
+          <span style={{...styles.kpiValue, color: '#3b82f6'}}>{data.roi.active_agents}</span>
+          <span style={styles.kpiLabel}>Active AI Agents</span>
         </div>
-
-        <div style={{...styles.card, gridColumn: 'span 2'}}>
-          <div style={styles.cardHeader}>
-            <span style={styles.label}>Global Migration Progress</span>
-            <Activity size={20} color="#a78bfa" />
-          </div>
-          <div style={styles.progressHeader}>
-            <span style={styles.statValue}>{progressPct}%</span>
-            <span style={styles.label}>{data.progress.completed} / {totalFiles} Files</span>
-          </div>
-          <div style={styles.progressTrack}>
-            <div style={{...styles.progressBar, width: `${progressPct}%`}}></div>
-          </div>
+        <div style={styles.kpiCard}>
+          <span style={{...styles.kpiValue, color: '#059669'}}>{progressPct}%</span>
+          <span style={styles.kpiLabel}>Migration Complete</span>
+        </div>
+        <div style={styles.kpiCard}>
+          <span style={{...styles.kpiValue, color: '#f59e0b', fontSize: '1.2rem'}}>{data.posture.security}</span>
+          <span style={styles.kpiLabel}>Security Posture</span>
         </div>
       </div>
 
-      {/* Bottom Row */}
-      <div style={styles.grid}>
-        <div style={styles.card}>
-          <h3 style={styles.sectionTitle}><Shield size={18} color="#10b981" /> Security Posture</h3>
-          <div style={styles.list}>
-            <div style={styles.listItem}>
-              <span>Write Access</span>
-              <span style={styles.tagGreen}>{data.posture.security}</span>
-            </div>
-            <div style={styles.listItem}>
-              <span>Architecture</span>
-              <span style={styles.tagBlue}>{data.posture.resilience}</span>
-            </div>
-          </div>
+      {/* Global Progress Bar */}
+      <div style={styles.section}>
+        <h2 style={styles.sectionTitle}>Repository Migration Progress</h2>
+        <div style={styles.progressBarOuter}>
+          <div style={{...styles.progressBarSegment, width: `${progressPct}%`, backgroundColor: '#059669'}}></div>
+          <div style={{...styles.progressBarSegment, width: `${totalFiles > 0 ? ((data.progress.in_progress / totalFiles) * 100) : 0}%`, backgroundColor: '#3b82f6'}}></div>
         </div>
+        <div style={styles.progressLabels}>
+          <span>✅ {data.progress.completed} Merged</span>
+          <span>🔵 {data.progress.in_progress} In-Flight</span>
+          <span>⬜ {data.progress.pending} Pending</span>
+        </div>
+      </div>
 
-        <div style={{...styles.card, gridColumn: 'span 2'}}>
-          <h3 style={styles.sectionTitle}><GitPullRequest size={18} color="#60a5fa" /> AST Dependency Topology (Batch {data.batch.current} of {data.batch.total})</h3>
+      {/* AST Dependency Topology — Per-Batch Stacked Bars */}
+      <div style={styles.section}>
+        <h2 style={styles.sectionTitle}>AST Dependency Topology — Batch Progress</h2>
+        {data.batch_details ? (
           <div style={styles.topoContainer}>
-            {Array.from({ length: data.batch.total }).map((_, idx) => {
-              const batchNum = idx + 1;
-              const isCurrent = batchNum === data.batch.current;
-              const isPast = batchNum < data.batch.current;
+            {data.batch_details.map((b) => {
+              const completedPct = b.total > 0 ? (b.completed / b.total) * 100 : 0;
+              const inProgressPct = b.total > 0 ? (b.in_progress / b.total) * 100 : 0;
+              const pendingPct = 100 - completedPct - inProgressPct;
+              const isCurrent = b.batch === data.batch.current;
+              const isFullyDone = b.completed === b.total;
+
               return (
-                <div key={idx} style={styles.topoColumn}>
+                <div key={b.batch} style={styles.topoColumn}>
+                  {/* File count label above bar */}
+                  <span style={{...styles.topoFileCount, color: isFullyDone ? '#059669' : '#94a3b8'}}>
+                    {b.completed}/{b.total}
+                  </span>
+                  {/* Stacked bar */}
                   <div style={{
-                    ...styles.topoBar,
-                    height: isPast ? '100%' : (isCurrent ? '75%' : '25%'),
-                    backgroundColor: isPast ? '#059669' : (isCurrent ? '#3b82f6' : '#1f2937'),
-                    animation: isCurrent ? 'pulse 2s infinite' : 'none'
-                  }}></div>
-                  <span style={styles.topoLabel}>B{batchNum}</span>
+                    ...styles.topoBarContainer,
+                    border: isCurrent ? '2px solid #3b82f6' : '1px solid #1e293b'
+                  }}>
+                    {/* Pending (top — gray) */}
+                    <div style={{width: '100%', height: `${pendingPct}%`, backgroundColor: '#1f2937', transition: 'height 0.5s ease'}}></div>
+                    {/* In-progress (middle — blue) */}
+                    <div style={{width: '100%', height: `${inProgressPct}%`, backgroundColor: '#3b82f6', transition: 'height 0.5s ease', animation: inProgressPct > 0 ? 'pulse 2s infinite' : 'none'}}></div>
+                    {/* Completed (bottom — green) */}
+                    <div style={{width: '100%', height: `${completedPct}%`, backgroundColor: '#059669', transition: 'height 0.5s ease'}}></div>
+                  </div>
+                  {/* Batch label below bar */}
+                  <span style={{
+                    ...styles.topoLabel,
+                    color: isCurrent ? '#3b82f6' : '#64748b',
+                    fontWeight: isCurrent ? 'bold' : 'normal'
+                  }}>
+                    B{b.batch}
+                  </span>
                 </div>
               );
             })}
+          </div>
+        ) : (
+          <p style={{color: '#64748b'}}>Waiting for batch manifest...</p>
+        )}
+        <div style={{...styles.progressLabels, marginTop: '12px'}}>
+          <span>🟩 Merged</span>
+          <span>🟦 In-Flight</span>
+          <span>⬛ Pending</span>
+          <span style={{color: '#3b82f6'}}>[ ] = Active Batch</span>
+        </div>
+      </div>
+
+      {/* System Posture */}
+      <div style={styles.section}>
+        <h2 style={styles.sectionTitle}>System Posture</h2>
+        <div style={styles.postureRow}>
+          <div style={styles.postureCard}>
+            <span style={{fontSize: '1.5rem'}}>🛡️</span>
+            <span style={styles.postureLabel}>{data.posture.security}</span>
+          </div>
+          <div style={styles.postureCard}>
+            <span style={{fontSize: '1.5rem'}}>🔄</span>
+            <span style={styles.postureLabel}>{data.posture.resilience}</span>
           </div>
         </div>
       </div>
@@ -119,35 +150,138 @@ const App = () => {
   );
 };
 
-// --- STYLES (Pure CSS-in-JS for Resiliency) ---
+// --- STYLES ---
 const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#030712', color: '#f9fafb', padding: '40px', fontFamily: 'sans-serif' },
-  header: { marginBottom: '32px', borderBottom: '1px solid #1f2937', paddingBottom: '16px' },
-  title: { fontSize: '2rem', fontWeight: 'bold', margin: 0, background: 'linear-gradient(to right, #60a5fa, #34d399)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', lineHeight: '1.05' },
-  subtitle: { color: '#9ca3af', marginTop: '12px', lineHeight: '1.25', marginBottom: 0 },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '24px' },
-  card: { backgroundColor: '#111827', border: '1px solid #374151', padding: '24px', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' },
-  cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
-  label: { color: '#9ca3af', fontSize: '0.875rem' },
-  statContainer: { display: 'flex', alignItems: 'baseline', gap: '4px' },
-  statValue: { fontSize: '2.25rem', fontWeight: 'bold' },
-  statUnit: { fontSize: '0.875rem', color: '#6b7280' },
-  badge: { fontSize: '0.75rem', marginTop: '8px', fontWeight: 'bold' },
-  progressHeader: { display: 'flex', alignItems: 'baseline', gap: '16px', marginBottom: '8px' },
-  progressTrack: { width: '100%', backgroundColor: '#1f2937', height: '10px', borderRadius: '5px' },
-  progressBar: { height: '10px', borderRadius: '5px', background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', transition: 'width 1s ease-in-out' },
-  sectionTitle: { fontSize: '1rem', color: '#9ca3af', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' },
-  list: { display: 'flex', flexDirection: 'column', gap: '16px' },
-  listItem: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(31, 41, 55, 0.5)', padding: '12px', borderRadius: '8px' },
-  tagGreen: { fontSize: '0.75rem', backgroundColor: 'rgba(6, 78, 59, 0.5)', color: '#34d399', padding: '4px 8px', borderRadius: '4px' },
-  tagBlue: { fontSize: '0.75rem', backgroundColor: 'rgba(30, 58, 138, 0.5)', color: '#60a5fa', padding: '4px 8px', borderRadius: '4px' },
-  topoContainer: { display: 'flex', gap: '16px', height: '128px', alignItems: 'flex-end' },
-  topoColumn: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' },
-  topoBar: { width: '100%', borderTopLeftRadius: '4px', borderTopRightRadius: '4px', transition: 'height 0.5s ease-in-out' },
-  topoLabel: { fontSize: '0.75rem', color: '#6b7280' }
+  container: {
+    minHeight: '100vh',
+    backgroundColor: '#0f172a',
+    color: '#e2e8f0',
+    fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+    padding: '32px',
+  },
+  header: {
+    textAlign: 'center',
+    marginBottom: '40px',
+  },
+  title: {
+    fontSize: '2rem',
+    fontWeight: '700',
+    color: '#f8fafc',
+    margin: '0 0 8px 0',
+  },
+  subtitle: {
+    fontSize: '1rem',
+    color: '#64748b',
+    margin: 0,
+  },
+  kpiRow: {
+    display: 'flex',
+    gap: '20px',
+    justifyContent: 'center',
+    marginBottom: '40px',
+    flexWrap: 'wrap',
+  },
+  kpiCard: {
+    backgroundColor: '#1e293b',
+    borderRadius: '12px',
+    padding: '24px 32px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    minWidth: '180px',
+  },
+  kpiValue: {
+    fontSize: '2.5rem',
+    fontWeight: '800',
+    color: '#059669',
+  },
+  kpiLabel: {
+    fontSize: '0.85rem',
+    color: '#94a3b8',
+    marginTop: '8px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+  },
+  section: {
+    backgroundColor: '#1e293b',
+    borderRadius: '12px',
+    padding: '24px',
+    marginBottom: '24px',
+  },
+  sectionTitle: {
+    fontSize: '1.1rem',
+    fontWeight: '600',
+    color: '#f8fafc',
+    marginTop: 0,
+    marginBottom: '16px',
+  },
+  progressBarOuter: {
+    display: 'flex',
+    height: '28px',
+    backgroundColor: '#0f172a',
+    borderRadius: '14px',
+    overflow: 'hidden',
+  },
+  progressBarSegment: {
+    height: '100%',
+    transition: 'width 0.5s ease',
+  },
+  progressLabels: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '8px',
+    fontSize: '0.85rem',
+    color: '#94a3b8',
+  },
+  topoContainer: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    gap: '8px',
+    justifyContent: 'center',
+    padding: '16px 0',
+  },
+  topoColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '4px',
+  },
+  topoFileCount: {
+    fontSize: '0.7rem',
+    fontWeight: '600',
+  },
+  topoBarContainer: {
+    width: '40px',
+    height: '200px',
+    borderRadius: '4px',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  topoLabel: {
+    fontSize: '0.7rem',
+    marginTop: '4px',
+  },
+  postureRow: {
+    display: 'flex',
+    gap: '20px',
+    justifyContent: 'center',
+  },
+  postureCard: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    backgroundColor: '#0f172a',
+    borderRadius: '8px',
+    padding: '16px 24px',
+  },
+  postureLabel: {
+    fontSize: '0.95rem',
+    color: '#e2e8f0',
+  },
 };
 
-const hoverAnimation = `
+const pulseAnimation = `
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
